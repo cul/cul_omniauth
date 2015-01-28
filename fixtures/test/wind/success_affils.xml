@@ -1,0 +1,13 @@
+<wind:serviceResponse xmlns:wind='http://www.columbia.edu/acis/rad/authmethods/wind'>
+ <wind:authenticationSuccess>
+  <wind:user>good_user</wind:user>
+  <wind:affiliations>
+   <wind:affil>lol.cunix.local:columbia.edu</wind:affil>
+   <wind:affil>wut.cunix.local:columbia.edu</wind:affil>
+  </wind:affiliations>
+  <wind:passwordtyped>true</wind:passwordtyped>
+  <wind:logintime>1422909840</wind:logintime>
+  <wind:passwordtime>1413040146</wind:passwordtime>
+  <wind:passwordchangeURI>https://idmapp.cc.columbia.edu/acctmanage/changepasswd</wind:passwordchangeURI>
+ </wind:authenticationSuccess>
+</wind:serviceResponse>
