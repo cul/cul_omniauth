@@ -18,7 +18,23 @@ module Cul::Omniauth::FileConfigurable
       opts ||= cas_configuration_opts
       opts = opts.dup
       provider = opts.delete(:provider)
+      fetch_raw_info = opts.delete(:fetch_raw_info)
+      fetch_raw_info = fetch_raw_info.to_sym if fetch_raw_info.is_a? String
+      if fetch_raw_info.is_a? Symbol
+        method = fetch_raw_info
+        fetch_raw_info = lambda do |strategy, options, ticket, ticket_user_info|
+          send(method, strategy, options, ticket, ticket_user_info)
+        end
+      end
+      opts[:fetch_raw_info] = fetch_raw_info if fetch_raw_info
       config.omniauth provider, opts
+    end
+    def print_raw_info(strategy, options, ticket, ticket_user_info)
+      puts "strategy: #{strategy.inspect}"
+      puts "options: #{options.inspect}"
+      puts "ticket: #{ticket.inspect}"
+      puts "ticket_user_info: #{ticket_user_info.inspect}"
+      {} # for merge
     end
   end
 end
