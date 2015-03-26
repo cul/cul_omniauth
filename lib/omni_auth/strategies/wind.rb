@@ -13,7 +13,7 @@ module OmniAuth
       class MissingWINDTicket < StandardError; end
       class InvalidWINDTicket < StandardError; end
       autoload :ServiceTicketValidator, 'omni_auth/strategies/wind/service_ticket_validator'
-      autoload :LogoutRequest, 'omni_auth/strategies/wind/lgout_request'
+      autoload :LogoutRequest, 'omni_auth/strategies/wind/logout_request'
 
       attr_accessor :raw_info
       alias_method :user_info, :raw_info
