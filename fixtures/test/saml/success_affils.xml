@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<Response 
+  xmlns="urn:oasis:names:tc:SAML:1.0:protocol" 
+  xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" 
+  xmlns:samlp="urn:oasis:names:tc:SAML:1.0:protocol" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  IssueInstant="2012-11-08T03:32:04.479Z" 
+  MajorVersion="1" MinorVersion="1" 
+  Recipient="https://casdev.cc.columbia.edu/cas-test/printAttributes" 
+  ResponseID="_b40601cd54df1adb1c45b023cf5f1b5f">
+  <Status>
+    <StatusCode Value="samlp:Success"></StatusCode>
+  </Status>
+  <Assertion 
+    xmlns="urn:oasis:names:tc:SAML:1.0:assertion" 
+    AssertionID="_3d51eb3d5fb1b0608536e9aeaefeb57d" 
+    IssueInstant="2012-11-08T03:32:04.479Z" 
+    Issuer="localhost" 
+    MajorVersion="1" MinorVersion="1">
+    <Conditions 
+      NotBefore="2012-11-08T03:32:04.479Z" 
+      NotOnOrAfter="2012-11-08T03:32:34.479Z">
+      <AudienceRestrictionCondition>
+        <Audience>https://casdev.cc.columbia.edu/cas-test/printAttributes</Audience>
+      </AudienceRestrictionCondition>
+    </Conditions>
+    <AttributeStatement>
+      <Subject>
+        <NameIdentifier>de3</NameIdentifier>
+        <SubjectConfirmation>
+        <ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod>
+        </SubjectConfirmation>
+      </Subject>
+      <Attribute 
+        AttributeName="lastPasswordChangeDate"
+        AttributeNamespace="http://www.ja-sig.org/products/cas/">
+        <AttributeValue>Fri Jun 29 16:06:39 EDT 2012</AttributeValue>
+      </Attribute>
+      <Attribute 
+        AttributeName="affiliation"
+        AttributeNamespace="http://www.ja-sig.org/products/cas/">
+        <AttributeValue>it.staff:columbia.edu</AttributeValue>
+        <AttributeValue>ad.ot.staff:columbia.edu</AttributeValue>
+        <AttributeValue>ft.ad.ot.staff:columbia.edu</AttributeValue>
+        <AttributeValue>staff:columbia.edu</AttributeValue>
+        <AttributeValue>officer:columbia.edu</AttributeValue>
+        <AttributeValue>acis.staff:columbia.edu</AttributeValue>
+      </Attribute>
+    </AttributeStatement>
+    <AuthenticationStatement 
+      AuthenticationInstant="2012-11-08T03:32:03.985Z" 
+      AuthenticationMethod="urn:oasis:names:tc:SAML:1.0:am:unspecified">
+      <Subject>
+      <NameIdentifier>de3</NameIdentifier>
+      <SubjectConfirmation>
+        <ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:artifact</ConfirmationMethod>
+      </SubjectConfirmation>
+      </Subject>
+    </AuthenticationStatement>
+  </Assertion>
+</Response>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

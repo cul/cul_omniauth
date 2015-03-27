@@ -3,6 +3,9 @@ module Cul::Omniauth::Callbacks
   def cas
     find_user('CAS')
   end
+  def saml
+    find_user('SAML')
+  end
   def wind
     find_user('WIND')
   end

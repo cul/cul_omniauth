@@ -7,6 +7,7 @@ module Cul
 end
 module OmniAuth
   module Strategies
+    require 'omni_auth/strategies/saml'
     require 'omni_auth/strategies/wind'
   end
 end

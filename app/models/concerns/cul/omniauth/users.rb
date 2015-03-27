@@ -24,6 +24,17 @@ module Cul::Omniauth::Users
       user
     end
 
+    def find_for_saml(token, resource=nil)
+      user = where(:login => token.uid).first
+      # create new user if necessary
+      unless user
+        user = create(whitelist(:login => token.uid))
+        # can we add groups or roles here?
+      end
+
+      user
+    end
+
     def find_for_wind(token, resource=nil)
       user = where(:login => token.uid).first
       # create new user if necessary
@@ -48,9 +59,9 @@ module Cul::Omniauth::Users
       @ability ||= Ability.new(self)
     end
     private
-    def whitelist(params={})
-      params.permit(:login,:uid,:provider,:email,:guest)
-      params
+    def whitelist(params=nil)
+      params.permit(:login,:uid,:provider,:email,:guest) if params.respond_to? :permit
+      params || {}
     end
   end
 end

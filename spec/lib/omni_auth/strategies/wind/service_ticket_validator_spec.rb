@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe OmniAuth::Strategies::WIND::ServiceTicketValidator do
-  it "should be a module" do
+  it "should be a class" do
     expect(OmniAuth::Strategies::WIND::ServiceTicketValidator).to be_a Class
   end
   describe "success parsing" do

@@ -1,4 +1,4 @@
-# This is a clone of the OmniAuth CAS Strategy for WIND
+# This is a clone of the OmniAuth CAS Strategy for SAML
 # Copyright (c) 2011 Derek Lindahl and CustomInk, LLC
 # distributed under the MIT license
 # https://github.com/dlindahl/omniauth-cas
@@ -7,24 +7,28 @@ require 'addressable/uri'
 
 module OmniAuth
   module Strategies
-    class WIND
+    class SAML
       include OmniAuth::Strategy
       # Custom Exceptions
-      class MissingWINDTicket < StandardError; end
-      class InvalidWINDTicket < StandardError; end
-      autoload :ServiceTicketValidator, 'omni_auth/strategies/wind/service_ticket_validator'
-      autoload :LogoutRequest, 'omni_auth/strategies/wind/logout_request'
+      class MissingCASTicket < StandardError; end
+      class InvalidCASTicket < StandardError; end
+      autoload :ServiceTicketValidator, 'omni_auth/strategies/saml/service_ticket_validator'
+      autoload :LogoutRequest, 'omni_auth/strategies/saml/logout_request'
 
       attr_accessor :raw_info
       alias_method :user_info, :raw_info
 
-      option :name, :wind # Required property by OmniAuth::Strategy
+      SAML_NS = {
+        samla: "urn:oasis:names:tc:SAML:1.0:assertion",
+        sprot: "urn:oasis:names:tc:SAML:1.0:protocol",
+      }
+      option :name, :saml # Required property by OmniAuth::Strategy
 
-      option :host, 'wind.columbia.edu'
+      option :host, 'cas.columbia.edu'
       option :port, nil
       option :path, nil
       option :ssl,  true
-      option :service_validate_url, '/validate'
+      option :service_validate_url, '/samlValidate'
       option :login_url,            '/login'
       option :service, nil
       option :logout_url,           '/logout'
@@ -75,18 +79,18 @@ module OmniAuth
       end
 
       def login_url(service)
-        wind_url + append_params(options.login_url, { destination: service, service: options.service })
+        cas_url + append_params(options.login_url, { TARGET: service })
       end
       def logout_url(service)
-        wind_url + append_params(options.logout_url, { destination: service})
+        cas_url + append_params(options.logout_url, { service: service})
       end
-      # Build a WIND host with protocol and port
+      # Build a CAS host with protocol and port
       #
       #
-      def wind_url
+      def cas_url
         extract_url if options['url']
-        validate_wind_setup
-        @wind_url ||= begin
+        validate_cas_setup
+        @cas_url ||= begin
           uri = Addressable::URI.new
           uri.host = options.host
           uri.scheme = options.ssl ? 'https' : 'http'
@@ -106,18 +110,20 @@ module OmniAuth
         )
       end
 
-      def validate_wind_setup
+      def validate_cas_setup
         if options.host.nil? || options.login_url.nil?
           raise ArgumentError.new(":host and :login_url MUST be provided")
         end
       end
 
       def service_validate_url(service_url, ticket)
-        service_url = Addressable::URI.parse(service_url)
-        service_url.query_values = service_url.query_values.tap { |qs| qs.delete('ticketid') }
-        r = wind_url + append_params(options.service_validate_url, {
-          ticketid: ticket
-        })
+        service_url = Addressable::URI.parse(service_url).origin
+        parms = {
+          TARGET: service_url,
+#          service: service_url,
+#          ticket: ticket
+        }
+        r = cas_url + append_params(options.service_validate_url, parms)
         r
       end
 
@@ -125,10 +131,11 @@ module OmniAuth
         if on_sso_path?
           single_sign_out_phase
         else
-          @ticket = request.params['ticketid']
-          return fail!(:no_ticket, MissingWINDTicket.new('No WIND Ticket')) unless @ticket
+          puts request.params.inspect
+          @ticket = request.params['SAMLart']
+          return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
           fetch_raw_info(@ticket)
-          return fail!(:invalid_ticket, InvalidWINDTicket.new('Invalid WIND Ticket')) if raw_info.empty?
+          return fail!(:invalid_ticket, InvalidCASTicket.new('Invalid CAS Ticket')) if raw_info.empty?
           super
         end
       end
@@ -141,7 +148,7 @@ module OmniAuth
             'Location' => login_url(service_url),
             'Content-Type' => 'text/plain'
           },
-          ["You are being redirected to WIND for sign-in."]
+          ["You are being redirected to CAS for sign-in."]
         ]
       end
 
@@ -163,7 +170,7 @@ module OmniAuth
       # Validate the Service Ticket
       # @return [Object] the validated Service Ticket
       def validate_service_ticket(ticket)
-        OmniAuth::Strategies::WIND::ServiceTicketValidator.new(self, options, callback_url, ticket).call
+        OmniAuth::Strategies::SAML::ServiceTicketValidator.new(self, options, callback_url, ticket).call
       end
 
     private
@@ -198,4 +205,4 @@ module OmniAuth
     end
   end
 end
-OmniAuth.config.add_camelization 'wind', 'WIND'
+OmniAuth.config.add_camelization 'saml', 'SAML'
