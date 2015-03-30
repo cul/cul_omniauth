@@ -70,7 +70,7 @@ end
 The Sessions controller should subclass Devise::SessionsController and provide two methods:
 
 ```ruby
-class Users::SessionsController < 
+class Users::SessionsController < Devise::SessionsController
   def new_session_path(scope)
     new_user_session_path # this accomodates Users namespace of the controller
   end
