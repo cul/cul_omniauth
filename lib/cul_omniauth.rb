@@ -1,6 +1,7 @@
 require 'omniauth-cas'
 module Cul
   module Omniauth
+    autoload :FailureApp, 'cul/omniauth/failure_app'
     autoload :FileConfigurable, 'cul/omniauth/file_configurable'
     require "cul/omniauth/engine"
   end

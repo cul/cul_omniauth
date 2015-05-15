@@ -28,6 +28,9 @@ module Cul::Omniauth::FileConfigurable
       end
       opts[:fetch_raw_info] = fetch_raw_info if fetch_raw_info
       config.omniauth provider, opts
+      config.warden do |manager|
+        manager.failure_app = Cul::Omniauth::FailureApp.for(provider)
+      end
     end
     def print_raw_info(strategy, options, ticket, ticket_user_info)
       puts "strategy: #{strategy.inspect}"
