@@ -3,6 +3,7 @@ module Cul
   module Omniauth
     autoload :FailureApp, 'cul/omniauth/failure_app'
     autoload :FileConfigurable, 'cul/omniauth/file_configurable'
+    autoload :AbilityProxy, 'cul/omniauth/ability_proxy'
     require "cul/omniauth/engine"
   end
 end
@@ -32,7 +33,6 @@ class OmniAuth::Strategies::CAS::ServiceTicketValidator
             if node_name == 'attributes'
               hash.merge!(parse_user_info(e))
             elsif node_name == 'affiliations'
-              puts node.text
               hash.merge!(affiliations: e.xpath('cas:affil',NS).collect {|x| x.text})
             else
               hash[node_name] = [] if hash[node_name].nil?
@@ -45,7 +45,6 @@ class OmniAuth::Strategies::CAS::ServiceTicketValidator
   end
   def find_authentication_success(body)
     return nil if body.nil? || body == ''
-    puts body.to_s
     begin
       doc = Nokogiri::XML(body)
       begin
