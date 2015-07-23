@@ -13,6 +13,15 @@ module Cul::Omniauth::Users
   
     mod.delegate :can?, :cannot?, :to => :ability
   end
+
+  def role? role_sym
+    role_sym == :guest
+  end
+
+  def ability
+    @ability ||= Ability.new(self)
+  end
+
   module ClassMethods
     def find_for_cas(token, resource=nil)
       user = where(:login => token.uid).first
@@ -55,9 +64,6 @@ module Cul::Omniauth::Users
       end
     end
 
-    def ability
-      @ability ||= Ability.new(self)
-    end
     private
     def whitelist(params=nil)
       params.permit(:login,:uid,:provider,:email,:guest) if params.respond_to? :permit
