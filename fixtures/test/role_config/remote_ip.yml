@@ -1,0 +1,8 @@
+_all_environments:
+  'guest':
+    can:
+      download:
+        if:
+          remote_ip:
+            in?:
+              - '255.255.255.255'
