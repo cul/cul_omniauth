@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.name        = "cul_omniauth"
   s.version     = Cul::Omniauth::VERSION
   s.require_paths = ["lib"]
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
+  s.authors     = ["barmintor"]
+  s.email       = ["LASTNAME at gmail"]
+  s.homepage    = "https://github.com/cul/cul_omniauth"
   s.summary     = "Omniauth engine for CUL web apps."
   s.description = "Engine and model mixins for Omniauth with CAS and SSL."
   s.license     = "MIT"
