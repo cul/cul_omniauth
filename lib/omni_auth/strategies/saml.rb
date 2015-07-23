@@ -131,7 +131,6 @@ module OmniAuth
         if on_sso_path?
           single_sign_out_phase
         else
-          puts request.params.inspect
           @ticket = request.params['SAMLart']
           return fail!(:no_ticket, MissingCASTicket.new('No CAS Ticket')) unless @ticket
           fetch_raw_info(@ticket)
