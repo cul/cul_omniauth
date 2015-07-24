@@ -15,7 +15,7 @@ module Cul::Omniauth::Users
   end
 
   def role? role_sym
-    role_sym == :guest
+    role_sym == :*
   end
 
   def ability

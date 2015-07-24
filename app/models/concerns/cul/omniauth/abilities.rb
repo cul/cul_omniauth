@@ -3,9 +3,16 @@ module Cul::Omniauth::Abilities
   EMPTY = [].freeze
   def initialize(user, opts={})
     @user = user || User.new
-    self.class.config.select {|role,config| user.role? role }.each do |role, config|
+    if user
+      role_permissions = self.class.config.select {|role,config| user.role? role }
+    else
+      role_permissions = {:'*' => self.class.config.fetch(:*,EMPTY)}
+    end
+    puts role_permissions.inspect
+    role_permissions.each do |role, config|
       config.fetch(:can,EMPTY).each do |action, conditions|
         if conditions.blank?
+          puts "can #{action}, :all"
           can action, :all
         else
           can action, Cul::Omniauth::AbilityProxy do |proxy|
@@ -45,6 +52,7 @@ module Cul::Omniauth::Abilities
       context.eql? value
     end
     def self.in?(context, value)
+      puts "#{context.inspect} #{value}"
       (Array(value) & Array(context)).size > 0 
     end
   end

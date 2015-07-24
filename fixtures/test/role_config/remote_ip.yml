@@ -1,5 +1,5 @@
 _all_environments:
-  'guest':
+  '*':
     can:
       download:
         if:

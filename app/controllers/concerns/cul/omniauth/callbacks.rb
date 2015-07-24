@@ -30,7 +30,13 @@ module Cul::Omniauth::Callbacks
       redirect_to root_url
     end
   end
+
   def affiliations(user, affils)
   end
+
+  def after_sign_in_path_for(resource)
+    session[:return_to] || super
+  end
+
   protected :find_user
 end
