@@ -28,7 +28,7 @@ module Cul::Omniauth::AuthorizingController
   end
 
   def authorize_action
-    if can? :"#{controller_name.to_s}##{params[:action].to_s}", Cul::Omniauth::AbilityProxy
+    if can? :"#{controller_name.to_s}##{params[:action].to_s}", Cul::Omniauth::AbilityProxy.new
       return true
     else
       if current_user
@@ -41,9 +41,9 @@ module Cul::Omniauth::AuthorizingController
     return false
   end
 
-  def access_denied
+  def access_denied(url=nil)
     flash[:notice] = "You not permitted to access this page"
-    redirect_to root_url
+    redirect_to url || root_url
     return false
   end
 
