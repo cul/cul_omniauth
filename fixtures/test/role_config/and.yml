@@ -1,0 +1,11 @@
+_all_environments:
+  '*':
+    can:
+      download:
+        combine_with: 'and'
+        if:
+          user_id:
+            eql?: 'test_user'
+          remote_ip:
+            in?:
+              - '255.255.255.255'

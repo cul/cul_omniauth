@@ -17,16 +17,25 @@ module Cul::Omniauth::Abilities
         else
           can action, Cul::Omniauth::AbilityProxy do |proxy|
             r = !!proxy
+            combine_with = conditions.fetch(:combine_with,:and).to_sym
             if r
               conditions.fetch(:if,EMPTY).each do |property, comparisons|
                 p = value_for_property(proxy, property, opts)
-                r &= !!p
-                r &= comparisons.detect {|c,v| Comparisons.send(c, p, v)}
+                if combine_with == :and
+                  r &= !!p
+                  r &= comparisons.detect {|c,v| Comparisons.send(c, p, v)}
+                elsif p
+                  r ||= comparisons.detect {|c,v| Comparisons.send(c, p, v)}
+                end
               end
               conditions.fetch(:unless,EMPTY).each do |property, comparisons|
                 p = value_for_property(proxy, property, opts)
                 if p
-                  r &= !comparisons.detect {|c,v| Comparisons.send(c, p, v)}
+                  if combine_with == :and
+                    r &= !comparisons.detect {|c,v| Comparisons.send(c, p, v)}
+                  else
+                    r ||= !comparisons.detect {|c,v| Comparisons.send(c, p, v)}
+                  end
                 end
               end
             end
@@ -41,7 +50,7 @@ module Cul::Omniauth::Abilities
     if proxy.respond_to? property_handle.to_sym
       property = proxy.send property_handle
     end
-    property = opts.fetch(property_handle,EMPTY) if property.blank?
+    property = opts.fetch(property_handle,EMPTY) if property.blank? || property.empty?
     property
   end
   module Comparisons
@@ -49,10 +58,11 @@ module Cul::Omniauth::Abilities
       context.include? value
     end
     def self.eql?(context, value)
+      puts "eql? #{context.inspect} #{value}"
       context.eql? value
     end
     def self.in?(context, value)
-      puts "#{context.inspect} #{value}"
+      puts "in? #{context.inspect} #{value}"
       (Array(value) & Array(context)).size > 0 
     end
   end
