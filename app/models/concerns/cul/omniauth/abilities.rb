@@ -1,10 +1,11 @@
 module Cul::Omniauth::Abilities
   extend ActiveSupport::Concern
   EMPTY = [].freeze
-  def initialize(user, opts={})
+  def initialize(user=nil, opts={})
     @user = user || User.new
     if user
       role_permissions = self.class.config.select {|role,config| user.role? role }
+      opts = {user_id: user.login}.merge(opts)
     else
       role_permissions = {:'*' => self.class.config.fetch(:*,EMPTY)}
     end
@@ -16,9 +17,9 @@ module Cul::Omniauth::Abilities
           can action, :all
         else
           can action, Cul::Omniauth::AbilityProxy do |proxy|
-            r = !!proxy
             combine_with = conditions.fetch(:combine_with,:and).to_sym
-            if r
+            r = (combine_with == :and)
+            if !!proxy
               conditions.fetch(:if,EMPTY).each do |property, comparisons|
                 p = value_for_property(proxy, property, opts)
                 if combine_with == :and

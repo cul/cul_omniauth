@@ -13,6 +13,7 @@ describe Cul::Omniauth::Abilities do
     c
   }
   let(:current_user) { User.new }
+  let(:proxy) { Cul::Omniauth::AbilityProxy.new }
   let(:rig) {
     rig = rig_class.new
     allow(rig).to receive(:request) { request }
@@ -20,43 +21,96 @@ describe Cul::Omniauth::Abilities do
     rig
   }
 
-  it do
-    expect(Cul::Omniauth::RemoteIpAbility).to be_a Module
-  end
-  describe Cul::Omniauth::RemoteIpAbility do
-    it do
-      expect(request).to receive(:remote_ip)
-      rig.current_ability
+  context "when combining with and" do
+    let(:rules) do
+      YAML.load(fixture('test/role_config/and.yml').read)['_all_environments']
     end
-  end
-  describe "configured for a remote ip" do
     before do
-      rules = YAML.load(fixture('test/role_config/and.yml').read)['_all_environments']
       Ability.instance_variable_set :@role_proxy_config, symbolize_hash_keys(rules)
       rig.instance_variable_set :@current_ability, nil
     end
     after do
       Ability.instance_variable_set :@role_proxy_config, nil
     end
-    describe "should allow when the IP is on the approved list and login is right" do
-      it "has remote_ip in proxy" do
-        proxy = Cul::Omniauth::AbilityProxy.new(remote_ip: '255.255.255.255', user_id: 'test_user')
-        result = rig.current_ability.can? :download, proxy
-        expect(result).to be
+    subject do
+      rig.current_ability
+    end
+    context "when the IP is on the approved list and login is right" do
+      before do
+        allow(current_user).to receive(:login).and_return('test_user')
+        request.remote_ip = '255.255.255.255'
+      end
+      it do
+        expect(subject.can?  :download, proxy).to be
       end
     end
-    context "should deny when the IP is not on the approved list or login is wrong" do
-      it "should deny when the IP is not on the approved list" do
-        request.remote_ip = nil
-        proxy = Cul::Omniauth::AbilityProxy.new(remote_ip: '255.255.255.1', user_id: 'test_user')
-        result = rig.current_ability.can? :download, proxy
-        expect(result).not_to be
+    context "when the IP is not on the approved list" do
+      before do
+        allow(current_user).to receive(:login).and_return('test_user')
+        request.remote_ip = '255.255.255.1'
       end
-      it "should deny when login is wrong" do
-        request.remote_ip = nil
-        proxy = Cul::Omniauth::AbilityProxy.new(remote_ip: '255.255.255.255', user_id: 'wrong_user')
-        result = rig.current_ability.can? :download, proxy
-        expect(result).not_to be
+      it do
+        expect(subject.can?  :download, proxy).not_to be
+      end
+    end
+    context "when login is wrong" do
+      before do
+        allow(current_user).to receive(:login).and_return('wrong_user')
+        request.remote_ip = '255.255.255.255'
+      end
+      it do
+        expect(subject.can?  :download, proxy).not_to be
+      end
+    end
+  end
+  context "when combining with or" do
+    let(:rules) do
+      YAML.load(fixture('test/role_config/or.yml').read)['_all_environments']
+    end
+    before do
+      Ability.instance_variable_set :@role_proxy_config, symbolize_hash_keys(rules)
+      rig.instance_variable_set :@current_ability, nil
+    end
+    after do
+      Ability.instance_variable_set :@role_proxy_config, nil
+    end
+    subject do
+      rig.current_ability
+    end
+    context "when the IP is on the approved list and login is right" do
+      before do
+        allow(current_user).to receive(:login).and_return('test_user')
+        request.remote_ip = '255.255.255.255'
+      end
+      it do
+        expect(subject.can?  :download, proxy).to be
+      end
+    end
+    context "when neither IP or login is approved" do
+      before do
+        allow(current_user).to receive(:login).and_return('wrong_user')
+        request.remote_ip = '255.255.255.1'
+      end
+      it do
+        expect(subject.can?  :download, proxy).not_to be
+      end
+    end
+    context "when the IP is not on the approved list" do
+      before do
+        allow(current_user).to receive(:login).and_return('test_user')
+        request.remote_ip = '255.255.255.1'
+      end
+      it do
+        expect(subject.can?  :download, proxy).to be
+      end
+    end
+    context "when login is wrong" do
+      before do
+        allow(current_user).to receive(:login).and_return('wrong_user')
+        request.remote_ip = '255.255.255.255'
+      end
+      it do
+        expect(subject.can?  :download, proxy).to be
       end
     end
   end

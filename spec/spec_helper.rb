@@ -57,6 +57,7 @@ class Ability
 end
 
 class User
+  attr_accessor :login
   def self.devise(*args); end
   include Cul::Omniauth::Users
 end
