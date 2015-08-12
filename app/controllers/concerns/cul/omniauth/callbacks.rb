@@ -18,7 +18,7 @@ module Cul::Omniauth::Callbacks
     find_method = "find_for_#{auth_type.downcase}".to_sym
     current_user ||= User.send(find_method,request.env["omniauth.auth"], current_user)
     affils = ["#{request.env["omniauth.auth"].uid}:users.cul.columbia.edu"]
-    affils << "staff:cul.columbia.edu" if current_user.cul_staff?
+    affils << "staff:cul.columbia.edu" if current_user.respond_to?(:cul_staff?) and  current_user.cul_staff?
     affils += (request.env["omniauth.auth"].extra.affiliations || [])
     affiliations(current_user,affils)
     session["devise.roles"] = affils

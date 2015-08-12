@@ -9,3 +9,6 @@ _all_environments:
           remote_ip:
             in?:
               - '255.255.255.255'
+  'downloaders':
+    can:
+      download: []

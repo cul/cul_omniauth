@@ -18,8 +18,58 @@ describe Cul::Omniauth::Abilities do
     rig = rig_class.new
     allow(rig).to receive(:request) { request }
     allow(rig).to receive(:current_user) { current_user }
+    allow(rig).to receive(:session) { Hash.new }
     rig
   }
+
+  subject do
+    rig.current_ability
+  end
+
+  context "when no valid session, role or id" do
+    before do
+      Ability.instance_variable_set :@role_proxy_config, symbolize_hash_keys(rules)
+      rig.instance_variable_set :@current_ability, nil
+    end
+    after do
+      Ability.instance_variable_set :@role_proxy_config, nil
+    end
+    let(:rules) do
+      YAML.load(fixture('test/role_config/and.yml').read)['_all_environments']
+    end
+    it do
+      expect(subject.can?  :download, proxy).not_to be
+    end
+  end
+
+  context "when user has a valid role" do
+    before do
+      Ability.instance_variable_set :@role_proxy_config, symbolize_hash_keys(rules)
+      rig.instance_variable_set :@current_ability, nil
+    end
+    after do
+      Ability.instance_variable_set :@role_proxy_config, nil
+    end
+    let(:rules) do
+      YAML.load(fixture('test/role_config/and.yml').read)['_all_environments']
+    end
+    context "in a session" do
+      before do
+        allow(rig).to receive(:session) { {'devise.roles' => [:'downloaders']} }
+      end
+      it do
+        expect(subject.can? :download, proxy).to be
+      end
+    end
+    context "in a user" do
+      it do
+        #allow(current_user).to receive(:role?).and_return(false)
+        allow(current_user).to receive(:role?).with(:*).and_return(true)
+        allow(current_user).to receive(:role?).with(:downloaders).and_return(true)
+        expect(subject.can? :download, proxy).to be
+      end
+    end
+  end
 
   context "when combining with and" do
     let(:rules) do
@@ -31,9 +81,6 @@ describe Cul::Omniauth::Abilities do
     end
     after do
       Ability.instance_variable_set :@role_proxy_config, nil
-    end
-    subject do
-      rig.current_ability
     end
     context "when the IP is on the approved list and login is right" do
       before do

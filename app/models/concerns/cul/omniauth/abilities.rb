@@ -1,26 +1,31 @@
 module Cul::Omniauth::Abilities
   extend ActiveSupport::Concern
-  EMPTY = [].freeze
+  module Empty
+    HASH = {}.freeze
+    ARRAY = [].freeze
+  end
   def initialize(user=nil, opts={})
     @user = user || User.new
+    roles = opts[:roles] || Empty::HASH
     if user
-      role_permissions = self.class.config.select {|role,config| user.role? role }
+      role_permissions = self.class.config.select do |role,config|
+        roles.include?(role) or user.role?(role)
+      end
+      role_permissions[:'*'] = self.class.config.fetch(:*,Empty::HASH)
       opts = {user_id: user.login}.merge(opts)
     else
-      role_permissions = {:'*' => self.class.config.fetch(:*,EMPTY)}
+      role_permissions = {:'*' => self.class.config.fetch(:*,Empty::HASH)}
     end
-    puts role_permissions.inspect
     role_permissions.each do |role, config|
-      config.fetch(:can,EMPTY).each do |action, conditions|
+      config.fetch(:can,Empty::HASH).each do |action, conditions|
         if conditions.blank?
-          puts "can #{action}, :all"
           can action, :all
         else
           can action, Cul::Omniauth::AbilityProxy do |proxy|
             combine_with = conditions.fetch(:combine_with,:and).to_sym
             r = (combine_with == :and)
             if !!proxy
-              conditions.fetch(:if,EMPTY).each do |property, comparisons|
+              conditions.fetch(:if,Empty::HASH).each do |property, comparisons|
                 p = value_for_property(proxy, property, opts)
                 if combine_with == :and
                   r &= !!p
@@ -29,7 +34,7 @@ module Cul::Omniauth::Abilities
                   r ||= comparisons.detect {|c,v| Comparisons.send(c, p, v)}
                 end
               end
-              conditions.fetch(:unless,EMPTY).each do |property, comparisons|
+              conditions.fetch(:unless,Empty::HASH).each do |property, comparisons|
                 p = value_for_property(proxy, property, opts)
                 if p
                   if combine_with == :and
@@ -51,7 +56,7 @@ module Cul::Omniauth::Abilities
     if proxy.respond_to? property_handle.to_sym
       property = proxy.send property_handle
     end
-    property = opts.fetch(property_handle,EMPTY) if property.blank? || property.empty?
+    property = opts.fetch(property_handle,Empty::ARRAY) if property.blank? || property.empty?
     property
   end
   module Comparisons
@@ -59,11 +64,9 @@ module Cul::Omniauth::Abilities
       context.include? value
     end
     def self.eql?(context, value)
-      puts "eql? #{context.inspect} #{value}"
       context.eql? value
     end
     def self.in?(context, value)
-      puts "in? #{context.inspect} #{value}"
       (Array(value) & Array(context)).size > 0 
     end
   end
