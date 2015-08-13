@@ -84,7 +84,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when the IP is on the approved list and login is right" do
       before do
-        allow(current_user).to receive(:login).and_return('test_user')
+        allow(current_user).to receive(:uid).and_return('test_user')
         request.remote_ip = '255.255.255.255'
       end
       it do
@@ -93,7 +93,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when the IP is not on the approved list" do
       before do
-        allow(current_user).to receive(:login).and_return('test_user')
+        allow(current_user).to receive(:uid).and_return('test_user')
         request.remote_ip = '255.255.255.1'
       end
       it do
@@ -102,7 +102,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when login is wrong" do
       before do
-        allow(current_user).to receive(:login).and_return('wrong_user')
+        allow(current_user).to receive(:uid).and_return('wrong_user')
         request.remote_ip = '255.255.255.255'
       end
       it do
@@ -126,7 +126,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when the IP is on the approved list and login is right" do
       before do
-        allow(current_user).to receive(:login).and_return('test_user')
+        allow(current_user).to receive(:uid).and_return('test_user')
         request.remote_ip = '255.255.255.255'
       end
       it do
@@ -135,7 +135,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when neither IP or login is approved" do
       before do
-        allow(current_user).to receive(:login).and_return('wrong_user')
+        allow(current_user).to receive(:uid).and_return('wrong_user')
         request.remote_ip = '255.255.255.1'
       end
       it do
@@ -144,7 +144,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when the IP is not on the approved list" do
       before do
-        allow(current_user).to receive(:login).and_return('test_user')
+        allow(current_user).to receive(:uid).and_return('test_user')
         request.remote_ip = '255.255.255.1'
       end
       it do
@@ -153,7 +153,7 @@ describe Cul::Omniauth::Abilities do
     end
     context "when login is wrong" do
       before do
-        allow(current_user).to receive(:login).and_return('wrong_user')
+        allow(current_user).to receive(:uid).and_return('wrong_user')
         request.remote_ip = '255.255.255.255'
       end
       it do

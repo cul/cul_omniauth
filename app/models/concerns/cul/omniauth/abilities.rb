@@ -12,7 +12,7 @@ module Cul::Omniauth::Abilities
         roles.include?(role) or user.role?(role)
       end
       role_permissions[:'*'] = self.class.config.fetch(:*,Empty::HASH)
-      opts = {user_id: user.login}.merge(opts)
+      opts = {user_id: user.uid}.merge(opts)
     else
       role_permissions = {:'*' => self.class.config.fetch(:*,Empty::HASH)}
     end

@@ -8,10 +8,16 @@ module Cul::Omniauth::Users
     mod.devise :registerable, :recoverable, 
     :rememberable, :trackable, :validatable, :omniauthable
 
+    #mod.attr_accessible :password
     #mod.attr_accessible :username, :uid, :provider
     #mod.attr_accessible :email, :guest
   
     mod.delegate :can?, :cannot?, :to => :ability
+  end
+
+
+  def full_name
+    return self.first_name + ' ' + self.last_name
   end
 
   def role? role_sym
@@ -24,20 +30,20 @@ module Cul::Omniauth::Users
 
   module ClassMethods
     def find_for_cas(token, resource=nil)
-      user = where(:login => token.uid).first
+      user = where(:uid => token.uid).first
       # create new user if necessary
       unless user
-        user = create(whitelist(:login => token.uid))
+        user = create(whitelist(:uid => token.uid))
         # can we add groups or roles here?
       end
       user
     end
 
     def find_for_saml(token, resource=nil)
-      user = where(:login => token.uid).first
+      user = where(:uid => token.uid).first
       # create new user if necessary
       unless user
-        user = create(whitelist(:login => token.uid))
+        user = create(whitelist(:uid => token.uid))
         # can we add groups or roles here?
       end
 
@@ -45,10 +51,10 @@ module Cul::Omniauth::Users
     end
 
     def find_for_wind(token, resource=nil)
-      user = where(:login => token.uid).first
+      user = where(:uid => token.uid).first
       # create new user if necessary
       unless user
-        user = create(whitelist(:login => token.uid))
+        user = create(whitelist(:uid => token.uid))
         # can we add groups or roles here?
       end
 
@@ -66,7 +72,7 @@ module Cul::Omniauth::Users
 
     private
     def whitelist(params=nil)
-      params.permit(:login,:uid,:provider,:email,:guest) if params.respond_to? :permit
+      params.permit(:uid,:provider,:email,:guest) if params.respond_to? :permit
       params || {}
     end
   end

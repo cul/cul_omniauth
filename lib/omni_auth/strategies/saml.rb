@@ -43,7 +43,7 @@ module OmniAuth
       # @return [Hash] Extra user info
       option :fetch_raw_info,       Proc.new { Hash.new }
       # Make all the keys configurable with some defaults set here
-      option :uid_field, 'user'
+      option :uid_field, 'uid'
       option :name_key, 'name'
       option :email_key, 'email'
       option :nickname_key, 'user'
