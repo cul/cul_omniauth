@@ -31,8 +31,11 @@ describe Cul::Omniauth::RemoteIpAbility do
   it do
     is_expected.to be_a Module
   end
-  it do
-    expect(request).to receive(:remote_ip)
-    rig.current_ability
+  context "is included" do
+    subject { request }
+    it do
+      is_expected.to receive(:remote_ip)
+      rig.current_ability
+    end
   end
 end
