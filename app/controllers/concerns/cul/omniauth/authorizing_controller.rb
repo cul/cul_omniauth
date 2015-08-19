@@ -1,6 +1,10 @@
 module Cul::Omniauth::AuthorizingController
   extend ActiveSupport::Concern
 
+  included do
+    devise_group :user, contains: [:user]
+  end
+
   def store_location
     session[:return_to] = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
   end
