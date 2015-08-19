@@ -13,7 +13,7 @@ describe Cul::Omniauth::Callbacks do
   let(:rig_class) {
     c = Class.new
     c.class_eval do
-      attr_accessor :current_user, :request, :flash, :session
+      attr_accessor :request, :flash, :session
       include Cul::Omniauth::Callbacks
     end
     c
@@ -30,7 +30,7 @@ describe Cul::Omniauth::Callbacks do
   context "is included" do
     subject { rig }
     before do
-      rig.current_user = current_user
+      rig.instance_variable_set :@current_user, current_user
       rig.request = request
       rig.session = {}
       allow(oa_response).to receive(:uid).and_return('foo')
@@ -61,7 +61,7 @@ describe Cul::Omniauth::Callbacks do
           end
           context "no current_user" do
             before do
-              rig.current_user = nil
+              rig.instance_variable_set :@current_user, nil
             end
             it do
               is_expected.to receive(:sign_in_and_redirect)
