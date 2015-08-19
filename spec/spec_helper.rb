@@ -49,15 +49,16 @@ end
 
 class DummyRequest
   attr_accessor :remote_ip
+  attr_accessor :env
 end
-
 class Ability
   include CanCan::Ability
   include Cul::Omniauth::Abilities
 end
 
 class User
-  attr_accessor :uid
+  attr_accessor :uid, :persisted
   def self.devise(*args); end
+  def persisted?; persisted; end
   include Cul::Omniauth::Users
 end
