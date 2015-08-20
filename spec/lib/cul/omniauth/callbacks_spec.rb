@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Cul::Omniauth::Callbacks do
   let(:oa_response) do
-    double('OmniauthResponse')
+    {}
   end
   let(:request) {
     DummyRequest.new
@@ -33,8 +33,8 @@ describe Cul::Omniauth::Callbacks do
       rig.instance_variable_set :@current_user, current_user
       rig.request = request
       rig.session = {}
-      allow(oa_response).to receive(:uid).and_return('foo')
-      allow(oa_response).to receive(:extra).and_return(OpenStruct.new)
+      oa_response['uid'] = 'foo'
+      oa_response['extra'] = {}
       request.env = {'omniauth.auth' => oa_response}
       rig.flash = {}
     end

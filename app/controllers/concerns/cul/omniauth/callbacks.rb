@@ -1,5 +1,8 @@
 module Cul::Omniauth::Callbacks
   extend ActiveSupport::Concern
+
+  OMNIAUTH_REQUEST_KEY = 'omniauth.auth'.freeze
+
   def cas
     find_user('CAS')
   end
@@ -16,18 +19,21 @@ module Cul::Omniauth::Callbacks
 
   def find_user(auth_type)
     find_method = "find_for_#{auth_type.downcase}".to_sym
-    @current_user = User.send(find_method,request.env["omniauth.auth"], @current_user) unless @current_user
-    affils = ["#{request.env["omniauth.auth"].uid}:users.cul.columbia.edu"]
+    # omniauth puts a hash of information with string keys in the request env
+    oa_data = request.env.fetch(OMNIAUTH_REQUEST_KEY,{})
+    @current_user ||= User.send(find_method,oa_data, @current_user)
+    affils = ["#{oa_data['uid']}:users.cul.columbia.edu"]
     affils << "staff:cul.columbia.edu" if @current_user.respond_to?(:cul_staff?) and @current_user.cul_staff?
-    affils += (request.env["omniauth.auth"].extra.affiliations || [])
+    affils += (oa_data.fetch('extra',{})['affiliations'] || [])
     affiliations(@current_user,affils)
     session["devise.roles"] = affils
-    if @current_user.persisted?
+    if @current_user && @current_user.persisted?
       flash[:notice] = I18n.t "devise.omniauth_callbacks.success", kind: auth_type
       sign_in_and_redirect @current_user, :event => :authentication
     else
-      flash[:notice] = I18n.t "devise.omniauth_callbacks.failure", kind: auth_type, reason: 'no persisted user for id'
-      session["devise.#{auth_type.downcase}_data"] = request.env["omniauth.auth"]
+      reason = @current_user ? 'no user found' : 'no persisted user for id'
+      flash[:notice] = I18n.t "devise.omniauth_callbacks.failure", kind: auth_type, reason: reason
+      session["devise.#{auth_type.downcase}_data"] = oa_data
       redirect_to root_url
     end
   end

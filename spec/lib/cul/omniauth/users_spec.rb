@@ -6,13 +6,13 @@ describe Cul::Omniauth::Users do
     is_expected.to be_a Module
   end
   context "is included" do
-    let(:token){ OpenStruct.new(uid: uid, provider: provider) }
+    let(:token){ {'uid'=> uid, 'provider'=> provider} }
     let(:uid) { 'foo' }
     let(:provider) { 'lol' }
     subject { User }
     context "token has no uid" do
       before do
-        token.uid = nil
+        token['uid'] = nil
       end
       it do
         expect(subject.find_for_provider(token, provider)).not_to be

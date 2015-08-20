@@ -29,9 +29,10 @@ module Cul::Omniauth::Users
   end
 
   module ClassMethods
+    # token is an omniauth hash
     def find_for_provider(token, provider)
-      return nil unless token.uid
-      props = {:uid => token.uid.downcase, provider: provider.downcase}
+      return nil unless token['uid']
+      props = {:uid => token['uid'].downcase, provider: provider.downcase}
       user = where(props).first
       # create new user if necessary
       unless user
@@ -53,8 +54,8 @@ module Cul::Omniauth::Users
     end
 
     def from_omniauth(auth)
-      where(provider: auth.provider.downcase, uid: auth.uid.downcase).first_or_create do |user|
-        user.email = auth.info.email
+      where(provider: token['provider'].downcase, uid: token['uid'].downcase).first_or_create do |user|
+        user.email = token['info']['email']
         user.password = Devise.friendly_token[0,20]
       end
     end
