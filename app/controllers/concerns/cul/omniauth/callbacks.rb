@@ -31,7 +31,8 @@ module Cul::Omniauth::Callbacks
       flash[:notice] = I18n.t "devise.omniauth_callbacks.success", kind: auth_type
       sign_in_and_redirect @current_user, :event => :authentication
     else
-      reason = @current_user ? 'no user found' : 'no persisted user for id'
+      reason = @current_user ? 'no persisted user for id' : 'no uid in token'
+      Rails.logger.warn("#{reason} #{oa_data.inspect}")
       flash[:notice] = I18n.t "devise.omniauth_callbacks.failure", kind: auth_type, reason: reason
       session["devise.#{auth_type.downcase}_data"] = oa_data
       redirect_to root_url
