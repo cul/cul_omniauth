@@ -25,7 +25,7 @@ module Cul::Omniauth::AuthorizingController
   def require_no_user
     if current_user
       store_location
-      flash[:notice] = "You must be logged out to access this page"
+      flash[:notice] = I18n.t('cul.omniauth.only_guest')
       redirect_to root_url
       return false
     end
@@ -46,7 +46,7 @@ module Cul::Omniauth::AuthorizingController
   end
 
   def access_denied(url=nil)
-    flash[:notice] = "You not permitted to access this page"
+      flash[:notice] = I18n.t('cul.omniauth.denied')
     redirect_to url || root_url
     return false
   end
