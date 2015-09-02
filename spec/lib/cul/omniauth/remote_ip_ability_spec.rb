@@ -9,7 +9,9 @@ describe Cul::Omniauth::RemoteIpAbility do
   }
   let(:rig_class) {
     c = Class.new
-    c.include(Cul::Omniauth::RemoteIpAbility)
+    c.class_eval do
+      include Cul::Omniauth::RemoteIpAbility
+    end
     c
   }
   let(:current_user) { User.new }
