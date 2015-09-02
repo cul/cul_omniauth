@@ -1,9 +1,6 @@
 # Configure Rails Environment
-ENV["RAILS_ENV"] = "test"
+ENV["RAILS_ENV"] ||= "test"
 require "bundler/setup"
-
-require 'rspec'
-require 'rspec/matchers'
 
 if ENV['COVERAGE']
   require 'simplecov'
@@ -13,7 +10,6 @@ end
 require File.expand_path("../../spec/dummy/config/environment.rb",  __FILE__)
 ActiveRecord::Migrator.migrations_paths = [File.expand_path("../../spec/dummy/db/migrate", __FILE__)]
 ActiveRecord::Migrator.migrations_paths << File.expand_path('../../db/migrate', __FILE__)
-require "rails/test_help"
 
 Rails.backtrace_cleaner.remove_silencers!
 
