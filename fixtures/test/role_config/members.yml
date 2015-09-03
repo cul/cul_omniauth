@@ -1,0 +1,15 @@
+_all_environments:
+  'one_level':
+    can:
+      download: []
+    members:
+      - '*'
+  'three_level':
+    members:
+      - 'two_level'
+  'two_level':
+    members:
+      - 'one_level'
+  'none_level':
+    can:
+      download: []
