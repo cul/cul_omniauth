@@ -28,7 +28,8 @@ module Cul::Omniauth::Callbacks
     affiliations(@current_user,affils)
     session["devise.roles"] = affils
     if @current_user && @current_user.persisted?
-      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", kind: auth_type
+      message = I18n.t "devise.omniauth_callbacks.success", kind: auth_type
+      flash[:notice] = message unless message.blank?
       sign_in_and_redirect @current_user, :event => :authentication
     else
       reason = @current_user ? 'no persisted user for id' : 'no uid in token'

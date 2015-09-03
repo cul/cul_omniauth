@@ -1,0 +1,5 @@
+en:
+  devise:
+    omniauth_callbacks:
+      success: ''
+      failure: 'You are not permitted to access this page'

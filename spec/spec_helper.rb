@@ -28,6 +28,10 @@ if ActiveSupport::TestCase.method_defined?(:fixture_path=)
   ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
 end
 
+def fixture_path(filename)
+  path = File.join(File.dirname(__FILE__),'..','fixtures',filename)
+end
+
 def fixture(filename, mode="r")
   path = File.join(File.dirname(__FILE__),'..','fixtures',filename)
   if block_given?

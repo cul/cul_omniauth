@@ -59,6 +59,21 @@ describe Cul::Omniauth::Callbacks do
             subject.send method.downcase.to_sym
             expect(rig.flash[:notice]).to be
           end
+          context "and success translation is empty" do
+            before do
+              I18n.load_path.unshift fixture_path(File.join('test', 'locales', 'translation.en.yml'))
+              I18n.backend.reload!
+            end
+            after do
+              I18n.load_path.shift
+              I18n.backend.reload!
+            end
+            it do
+              is_expected.to receive(:sign_in_and_redirect)
+              subject.send method.downcase.to_sym
+              expect(rig.flash[:notice]).not_to be
+            end
+          end
           context "no current_user" do
             before do
               rig.instance_variable_set :@current_user, nil
