@@ -61,4 +61,5 @@ class User
   def self.devise(*args); end
   def persisted?; persisted; end
   include Cul::Omniauth::Users
+  include Cul::Omniauth::Users::ConfiguredRoles
 end

@@ -5,17 +5,21 @@ module Cul::Omniauth::Abilities
     ARRAY = [].freeze
   end
   def initialize(user=nil, opts={})
-    @user = user || User.new
-    roles = opts[:roles] || Empty::HASH
     if user
-      role_permissions = self.class.config.select do |role,config|
-        roles.include?(role) or user.role?(role)
-      end
-      role_permissions[:'*'] = self.class.config.fetch(:*,Empty::HASH)
+      @user = user
       opts = {user_id: user.uid}.merge(opts)
     else
-      role_permissions = {:'*' => self.class.config.fetch(:*,Empty::HASH)}
+      @user = User.new
     end
+    roles = opts[:roles] || Empty::HASH
+    if @user
+      role_permissions = self.class.config.select do |role,config|
+        roles.include?(role) or @user.role?(role)
+      end
+    else
+      role_permissions = {}
+    end
+    role_permissions[:'*'] = self.class.config.fetch(:*,Empty::HASH)
     role_permissions.each do |role, config|
       config.fetch(:can,Empty::HASH).each do |action, conditions|
         if conditions.blank?

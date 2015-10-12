@@ -1,4 +1,7 @@
 _all_environments:
+  '*':
+    can:
+      index: []
   'one_level':
     can:
       download: []

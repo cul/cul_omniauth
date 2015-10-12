@@ -163,4 +163,30 @@ describe Cul::Omniauth::Abilities do
       end
     end
   end
+
+  context "with no user" do
+  let(:current_user) { nil }
+    let(:rules) do
+      YAML.load(fixture('test/role_config/members.yml').read)['_all_environments']
+    end
+    before do
+      Ability.instance_variable_set :@role_proxy_config, symbolize_hash_keys(rules)
+      rig.instance_variable_set :@current_ability, nil
+    end
+    after do
+      Ability.instance_variable_set :@role_proxy_config, nil
+    end
+    subject do
+      rig.current_ability
+    end
+    it "has abilities of *" do
+        expect(subject.can?  :index, proxy).to be
+    end
+    it "has abilities of roles with member *" do
+        expect(subject.can?  :download, proxy).to be
+    end
+    it "doesn't have unexpected abilities" do
+        expect(subject.can?  :update, proxy).not_to be
+    end
+  end
 end
