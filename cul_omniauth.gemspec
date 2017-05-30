@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 5.0"
   s.add_dependency "devise-guests", "~> 0.3"
   s.add_dependency "omniauth-cas"
-  s.add_dependency "cancan"
+  s.add_dependency "cancancan", "~> 1.10"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency 'rspec', '~> 3.0.0'
 end
