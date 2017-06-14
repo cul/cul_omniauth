@@ -1,15 +1,28 @@
 # Cul::Omniauth
 
 Cul::Omniauth is a Rails engine to facilitate using [Devise](https://github.com/plataformatec/devise "Devise") and Omniauth with the [CAS offering from Columbia University IT](https://cuit.columbia.edu/cas-authentication "CUIT CAS Documentation").
+## Installing Devise
+1. Add gem 'devise' to Gemfile
 
-These instructions assume the Devise generators have been run for the target application.
+2. Run `bundle install`
 
-## Basic CAS Configuration
-```ruby
-Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :cas, host: 'cas.yourdomain.com'
-end
-```
+3. Run devise generator `rails generate devise:install` and follow devise specified instructions
+
+4. Add model, run `rails g model User`
+
+* Check Devise README for latest installation instructions
+
+## Install cul_omniauth
+
+1. Add gem cul_omniauth to Gemfile
+
+2. Run `bundle install`
+
+3. Change mixin in User model to `include Cul::Omniauth::Users`
+
+4. Create migration to remove encrypted_password field of user model
+
+5. Create migration to add uid and provider fields to user model, both are strings
 
 More CAS configuration information at [OmniAuth CAS](https://github.com/dlindahl/omniauth-cas "OmniAuth-CAS")
 
@@ -51,6 +64,12 @@ wind: &WIND
   service_validate_url: /validate
   service: 'your_service_key_here'
   provider: wind
+
+development: *CAS
+test: *CAS
+myapp_dev: *CAS
+mypp_test: *CAS
+myapp_prod: *CAS
 ```
 ... with the environment configurations for your Rails app including one of these configurations as appropriate. **If your application uses affiliation attributes from CAS, it must use the :saml provider**.
 
@@ -80,6 +99,20 @@ class Users::SessionsController < Devise::SessionsController
   end
 end
 ```
+## Routing
+
+To ensure that devise uses the proper routes and controllers, change `devise_for :users` to:
+
+`devise_for :users, controllers: {sessions: 'users/sessions', omniauth_callbacks: 'users/omniauth_callbacks'}`
+
+In order to add sign_in and sign_out methods:
+
+```ruby
+  devise_scope :user do
+    get 'sign_in', :to => 'users/sessions#new', :as => :new_user_session
+    get 'sign_out', :to => 'users/sessions#destroy', :as => :destroy_user_session
+  end
+```
 
 ### Authorizing Application Controllers
 Once the authentication machinery is configured, users can be authenticated by including the appropriate Devise mixins:
@@ -101,6 +134,20 @@ class User < ActiveRecord::Base
   include Blacklight::User
   include Cul::Omniauth::Users
   # additional application-local business
+end
+```
+
+### Troubleshooting
+
+If your user model is not using database authenticatable and does not have a password column, you will need to add two dummy password methods (a getter and a setter). These methods are required by devise. You are having this problem if your user model can't find a password method. To solve this problem add the following methods to your model:
+
+```ruby
+def password
+  Devise.friendly_token[0,20]
+end
+
+def password=(*val)
+  # NOOP
 end
 ```
 
