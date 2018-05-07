@@ -1,6 +1,13 @@
 # Cul::Omniauth
 
 Cul::Omniauth is a Rails engine to facilitate using [Devise](https://github.com/plataformatec/devise "Devise") and Omniauth with the [CAS offering from Columbia University IT](https://cuit.columbia.edu/cas-authentication "CUIT CAS Documentation").
+
+## Versions
+__v0.5.3__ is the last version to work with Rails 4, any fixes to this version can be started from `0.x-stable`
+
+__v1.0.0__ is the first version to work with Rails 4, any fixes to this version can be started from `master`
+
+
 ## Installing Devise
 1. Add gem 'devise' to Gemfile
 
@@ -130,7 +137,7 @@ Authorization is handled by separate libraries, although Cul::Omniauth is curren
 This gem assumes use of the Devise sessions model, though your application must still provide a User model. This User model should mixin the Cul::Omniauth::Users module:
 ```ruby
 class User < ActiveRecord::Base
-  # Connects this user object to Blacklights Bookmarks and Folders. 
+  # Connects this user object to Blacklights Bookmarks and Folders.
   include Blacklight::User
   include Cul::Omniauth::Users
   # additional application-local business
