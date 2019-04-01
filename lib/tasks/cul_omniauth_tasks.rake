@@ -22,8 +22,8 @@ namespace :cul_omniauth do
     end
 
   rescue LoadError => e
-    puts "[Warning] Exception creating rspec rake tasks.  This message can be ignored in environments that intentionally do not pull in the RSpec gem (i.e. production)."
-    puts e
+    # https://github.com/rspec/rspec-core/issues/1638
+    # rspec is not available
   end
   desc "Execute specs with coverage"
   task :coverage do
