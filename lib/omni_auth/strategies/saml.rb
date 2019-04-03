@@ -122,8 +122,7 @@ module OmniAuth
         target_url = service_url.split('?').first
 
         parms = {
-          TARGET: target_url,
-          RequestID: SecureRandom.hex(16)
+          TARGET: target_url
 #          service: service_url,
 #          ticket: ticket
         }
