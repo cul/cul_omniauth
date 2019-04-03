@@ -123,7 +123,6 @@ module OmniAuth
 
         parms = {
           TARGET: target_url,
-          RequestID: SecureRandom.hex(16)
         }
         r = cas_url + append_params(options.service_validate_url, parms)
         r
