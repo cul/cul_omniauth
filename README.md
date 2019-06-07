@@ -1,13 +1,6 @@
 # Cul::Omniauth
 
 Cul::Omniauth is a Rails engine to facilitate using [Devise](https://github.com/plataformatec/devise "Devise") and Omniauth with the [CAS offering from Columbia University IT](https://cuit.columbia.edu/cas-authentication "CUIT CAS Documentation").
-
-## Versions
-__v0.5.3__ is the last version to work with Rails 4, any fixes to this version can be started from `0.x-stable`
-
-__v1.0.0__ is the first version to work with Rails 4, any fixes to this version can be started from `master`
-
-
 ## Installing Devise
 1. Add gem 'devise' to Gemfile
 
