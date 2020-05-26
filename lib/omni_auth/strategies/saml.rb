@@ -79,7 +79,9 @@ module OmniAuth
       end
 
       def login_url(service)
-        cas_url + append_params(options.login_url, { TARGET: service })
+        target_url = service.split('?').first
+        parms = { TARGET: target_url }
+        cas_url + append_params(options.login_url, parms)
       end
       def logout_url(service)
         cas_url + append_params(options.logout_url, { service: service})
@@ -117,9 +119,10 @@ module OmniAuth
       end
 
       def service_validate_url(service_url, ticket)
-        service_url = Addressable::URI.parse(service_url).origin
+        target_url = service_url.split('?').first
+
         parms = {
-          TARGET: service_url,
+          TARGET: target_url
 #          service: service_url,
 #          ticket: ticket
         }

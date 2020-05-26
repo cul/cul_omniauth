@@ -8,7 +8,7 @@ module OmniAuth
       class ServiceTicketValidator < OmniAuth::Strategies::CAS::ServiceTicketValidator
        ART_TEMPLATE = "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                      "<SOAP-ENV:Header/><SOAP-ENV:Body>" +
-                     "<samlp:Request IssueInstant=\"%s\" MajorVersion=\"1\" MinorVersion=\"1\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\">" +
+                     "<samlp:Request IssueInstant=\"%s\" RequestID=\"%s\" MajorVersion=\"1\" MinorVersion=\"1\" xmlns:samlp=\"urn:oasis:names:tc:SAML:1.0:protocol\">" +
                      "<samlp:AssertionArtifact>%s</samlp:AssertionArtifact>" +
                      "</samlp:Request>" +
                      "</SOAP-ENV:Body>" +
@@ -52,7 +52,7 @@ module OmniAuth
           end
         end
         def get_service_request_body
-          ART_TEMPLATE % [Time.now.utc.iso8601(3), @ticket]
+          ART_TEMPLATE % [Time.now.utc.iso8601(3), SecureRandom.hex(16), @ticket]
         end
         # retrieves the `<sprot:Response>` XML from the CAS server
         def get_service_response_body
