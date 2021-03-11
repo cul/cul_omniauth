@@ -12,7 +12,9 @@ class Cul::Omniauth::FailureApp < Devise::FailureApp
   	r.provider = provider || self.provider
   	r
   end
-  def redirect_url
-    user_omniauth_authorize_path(self.class.provider)
-  end
+
+  #def redirect_url
+  #  user_omniauth_authorize_path(self.class.provider)
+  #end
+
 end
