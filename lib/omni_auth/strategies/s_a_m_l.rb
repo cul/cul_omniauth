@@ -12,8 +12,8 @@ module OmniAuth
       # Custom Exceptions
       class MissingCASTicket < StandardError; end
       class InvalidCASTicket < StandardError; end
-      autoload :ServiceTicketValidator, 'omni_auth/strategies/saml/service_ticket_validator'
-      autoload :LogoutRequest, 'omni_auth/strategies/saml/logout_request'
+      autoload :ServiceTicketValidator, 'omni_auth/strategies/s_a_m_l/service_ticket_validator'
+      autoload :LogoutRequest, 'omni_auth/strategies/s_a_m_l/logout_request'
 
       attr_accessor :raw_info
       alias_method :user_info, :raw_info

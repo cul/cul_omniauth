@@ -21,7 +21,7 @@ describe Cul::Omniauth::Users do
     context "existing user" do
       let(:users) { [double(User)]}
       it do
-        is_expected.to receive(:where).with(uid: uid, provider: provider).and_return(users)
+        is_expected.to receive(:where).with({ uid: uid, provider: provider }).and_return(users)
         is_expected.not_to receive(:"create!")
         subject.find_for_provider(token, provider)
       end
@@ -29,8 +29,8 @@ describe Cul::Omniauth::Users do
     context "new user" do
       let(:users) { []}
       it do
-        is_expected.to receive(:where).with(uid: uid, provider: provider).and_return(users)
-        is_expected.to receive(:"create!").with(uid: uid, provider: provider).and_return(double(User))
+        is_expected.to receive(:where).with({ uid: uid, provider: provider }).and_return(users)
+        is_expected.to receive(:"create!").with({ uid: uid, provider: provider }).and_return(double(User))
         subject.find_for_provider(token, provider)
       end
     end

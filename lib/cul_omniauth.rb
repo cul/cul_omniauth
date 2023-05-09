@@ -1,18 +1,10 @@
+require 'devise'
 require 'omniauth-cas'
-module Cul
-  module Omniauth
-    autoload :FailureApp, 'cul/omniauth/failure_app'
-    autoload :FileConfigurable, 'cul/omniauth/file_configurable'
-    autoload :AbilityProxy, 'cul/omniauth/ability_proxy'
-    require "cul/omniauth/engine"
-  end
-end
-module OmniAuth
-  module Strategies
-    require 'omni_auth/strategies/saml'
-    require 'omni_auth/strategies/wind'
-  end
-end
+require 'cul/omniauth'
+require 'omni_auth/strategies/s_a_m_l'
+require 'omni_auth/strategies/w_i_n_d'
+module CulOmniauth; end
+
 OmniAuth::Strategies::CAS::ServiceTicketValidator.class
 class OmniAuth::Strategies::CAS::ServiceTicketValidator
   alias defunct_parse parse_user_info

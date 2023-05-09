@@ -12,8 +12,8 @@ module OmniAuth
       # Custom Exceptions
       class MissingWINDTicket < StandardError; end
       class InvalidWINDTicket < StandardError; end
-      autoload :ServiceTicketValidator, 'omni_auth/strategies/wind/service_ticket_validator'
-      autoload :LogoutRequest, 'omni_auth/strategies/wind/logout_request'
+      autoload :ServiceTicketValidator, 'omni_auth/strategies/w_i_n_d/service_ticket_validator'
+      autoload :LogoutRequest, 'omni_auth/strategies/w_i_n_d/logout_request'
 
       attr_accessor :raw_info
       alias_method :user_info, :raw_info

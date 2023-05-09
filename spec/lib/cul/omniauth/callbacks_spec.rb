@@ -61,12 +61,7 @@ describe Cul::Omniauth::Callbacks do
           end
           context "and success translation is empty" do
             before do
-              I18n.load_path.unshift fixture_path(File.join('test', 'locales', 'translation.en.yml'))
-              I18n.backend.reload!
-            end
-            after do
-              I18n.load_path.shift
-              I18n.backend.reload!
+              expect(I18n).to receive(:t).with("devise.omniauth_callbacks.success", kind: method).and_return("")
             end
             it do
               is_expected.to receive(:sign_in_and_redirect)
