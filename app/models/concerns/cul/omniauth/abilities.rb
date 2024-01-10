@@ -80,7 +80,9 @@ module Cul::Omniauth::Abilities
       @role_proxy_config ||= begin
         root = (Rails.root.blank?) ? '.' : Rails.root
         path = File.join(root,'config','roles.yml')
-        _opts = YAML.load_file(path)
+        # We'll use YAML loading logic similar to Rails 7, for older and newer psych gem compatibility
+        # https://github.com/rails/rails/blob/7-1-stable/activesupport/lib/active_support/encrypted_configuration.rb#L99
+        _opts = YAML.respond_to?(:unsafe_load) ? YAML.unsafe_load_file(path) : YAML.load_file(path)
         all_config = _opts.fetch("_all_environments", {})
         env_config = _opts.fetch(Rails.env, {})
         symbolize_hash_keys(all_config.merge(env_config))

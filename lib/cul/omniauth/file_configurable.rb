@@ -8,7 +8,11 @@ module Cul::Omniauth::FileConfigurable
   module ClassMethods
     def cas_configuration_opts
       @cas_opts ||= begin
-        _opts = YAML.load_file(File.join(Rails.root,'config','cas.yml'))[Rails.env] || {}
+        conf_path = File.join(Rails.root,'config','cas.yml')
+        # We'll use YAML loading logic similar to Rails 7, for older and newer psych gem compatibility
+        # https://github.com/rails/rails/blob/7-1-stable/activesupport/lib/active_support/encrypted_configuration.rb#L99
+        conf = YAML.respond_to?(:unsafe_load) ? YAML.unsafe_load_file(conf_path) : YAML.load_file(conf_path)
+        _opts = conf[Rails.env] || {}
         _opts = _opts.symbolize_keys
         _opts
       end
