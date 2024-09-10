@@ -1,5 +1,9 @@
 # Cul::Omniauth
 
+**NOTE: This gem is deprecated and has been replaced by: https://github.com/cul/omniauth-cul**
+
+-----
+
 Cul::Omniauth is a Rails engine to facilitate using [Devise](https://github.com/plataformatec/devise "Devise") and Omniauth with the [CAS offering from Columbia University IT](https://cuit.columbia.edu/cas-authentication "CUIT CAS Documentation").
 ## Installing Devise
 1. Add gem 'devise' to Gemfile
