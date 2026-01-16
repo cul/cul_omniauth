@@ -1,6 +1,6 @@
 # Cul::Omniauth
 
-**NOTE: This gem is deprecated and has been replaced by: https://github.com/cul/omniauth-cul**
+**NOTE: The cul_omniauth gem is deprecated.  You should use the omniauth-cul gem instead.  See: https://github.com/cul/omniauth-cul**
 
 -----
 
